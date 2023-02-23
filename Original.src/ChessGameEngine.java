@@ -167,7 +167,6 @@ public class ChessGameEngine{
         else
         {
             board.resetBoard( false );
-            // System.exit(0);
         }
     }
     /**
@@ -241,6 +240,8 @@ public class ChessGameEngine{
      * @param e
      *            the mouse event from the listener
      */
+
+    // Modificar código - existe complejidad ciclomática alta
     public void determineActionFromSquareClick( MouseEvent e ){
         BoardSquare squareClicked = (BoardSquare)e.getSource();
         ChessGamePiece pieceOnSquare = squareClicked.getPieceOnSquare();

@@ -1,6 +1,5 @@
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
-// import java.awt.Color;
 // -------------------------------------------------------------------------
 /**
  * Represents a Queen game piece.
@@ -43,7 +42,7 @@ public class Queen
         ArrayList<String> southMoves = calculateSouthMoves( board, 8 );
         ArrayList<String> eastMoves = calculateEastMoves( board, 8 );
         ArrayList<String> westMoves = calculateWestMoves( board, 8 );
-        ArrayList<String> allMoves = new ArrayList<String>();
+        ArrayList<String> allMoves = new ArrayList<>();
         allMoves.addAll( northEastMoves );
         allMoves.addAll( northWestMoves );
         allMoves.addAll( southWestMoves );
