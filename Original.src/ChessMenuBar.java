@@ -10,8 +10,7 @@ import javax.swing.*;
  * @author Danielle Bushrow (dbushrow)
  * @version 2010.11.17
  */
-public class ChessMenuBar
-    extends JMenuBar{
+public class ChessMenuBar extends JMenuBar{
     // ----------------------------------------------------------
     /**
      * Create a new ChessMenuBar object.
@@ -40,8 +39,7 @@ public class ChessMenuBar
      * @author Danielle Bushrow (dbushrow)
      * @version 2010.11.17
      */
-    private class MenuListener
-        implements ActionListener
+    private class MenuListener implements ActionListener
     {
         /**
          * Takes an appropriate action based on which menu button is clicked
@@ -69,20 +67,31 @@ public class ChessMenuBar
                 toggleGraveyardHandler();
             }
         }
+        private void aboutHandler(){
+            JOptionPane.showMessageDialog(
+                ChessMenuBar.this.getParent(),
+                "YetAnotherChessGame v1.0 by:\nBen Katz\nMyles David\n"
+                        + "Danielle Bushrow\n\nFinal Project for CS2114 @ VT" );
+        }
+
     }
     // ----------------------------------------------------------
     /**
      * Takes an appropriate action if the about button is clicked.
      */
+    //Modificar código - Move this method into "MenuListener".
+    /*
     private void aboutHandler(){
         JOptionPane.showMessageDialog(
             this.getParent(),
             "YetAnotherChessGame v1.0 by:\nBen Katz\nMyles David\n"
                 + "Danielle Bushrow\n\nFinal Project for CS2114 @ VT" );
     }
+    */
     /**
      * Takes an appropriate action if the restart button is clicked.
      */
+
     private void restartHandler(){
         ( (ChessPanel)this.getParent() ).getGameEngine().reset();
     }
@@ -91,16 +100,23 @@ public class ChessMenuBar
      * Uses Tony Allevato's code for exiting a GUI app without System.exit()
      * calls.
      */
+
+    // BUG - Modificar código - "NullPointerException" could be thrown
     private void exitHandler(){
-        JOptionPane.showMessageDialog( this.getParent(), "Thanks for leaving"
-            + ", quitter! >:(" );
-        Component possibleFrame = this;
-        while ( possibleFrame != null && !( possibleFrame instanceof JFrame ) ){
-            possibleFrame = possibleFrame.getParent();
+        try{
+            JOptionPane.showMessageDialog( this.getParent(), "Thanks for leaving"
+                    + ", quitter! >:(" );
+            Component possibleFrame = this;
+            while ( possibleFrame != null && !( possibleFrame instanceof JFrame ) ){
+                possibleFrame = possibleFrame.getParent();
+            }
+            JFrame frame = (JFrame)possibleFrame;
+            frame.setVisible( false );
+            frame.dispose();
+        }catch(NullPointerException e){
+            System.out.println("NullPointerException thrown!");
         }
-        JFrame frame = (JFrame)possibleFrame;
-        frame.setVisible( false );
-        frame.dispose();
+
     }
     /**
      * Takes an appropriate action if the toggle graveyard button is clicked.
