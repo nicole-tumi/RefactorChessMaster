@@ -1,3 +1,5 @@
+package original;
+
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 // -------------------------------------------------------------------------
@@ -68,56 +70,47 @@ public class Pawn
      *            the game board to calculate moves on
      * @return ArrayList<String> the moves
      */
+    // Corregido - Modificar código - existe complejidad ciclomática alta
     @Override
-    protected ArrayList<String> calculatePossibleMoves( ChessGameBoard board ){
+    protected ArrayList<String> calculatePossibleMoves(ChessGameBoard board) {
         ArrayList<String> moves = new ArrayList<>();
 
-        // Modificar código - existe complejidad ciclomática alta
-        if ( isPieceOnScreen() ){
-            int currRow =
-                getColorOfPiece() == ChessGamePiece.WHITE
-                    ? ( pieceRow - 1 )
-                    : ( pieceRow + 1 );
-            int count = 1;
-            int maxIter = notMoved ? 2 : 1;
-            // check for normal moves
-            while ( count <= maxIter ){ // only loop while we have open slots and have not passed our
-              // limit
-                if ( isOnScreen( currRow, pieceColumn )
-                    && board.getCell( currRow,
-                        pieceColumn ).getPieceOnSquare() == null ){
-                    moves.add( currRow + "," + pieceColumn );
-                }
-                else
-                {
-                    break;
-                }
-                currRow =
-                    ( getColorOfPiece() == ChessGamePiece.WHITE )
-                        ? ( currRow - 1 )
-                        : ( currRow + 1 );
-                count++;
-            }
-            // check for enemy capture points
-            if ( getColorOfPiece() == ChessGamePiece.WHITE ){
-                if ( isEnemy( board, pieceRow - 1, pieceColumn - 1 ) ){
-                    moves.add( ( pieceRow - 1 ) + "," + ( pieceColumn - 1 ) );
-                }
-                if ( isEnemy( board, pieceRow - 1, pieceColumn + 1 ) ){
-                    moves.add( ( pieceRow - 1 ) + "," + ( pieceColumn + 1 ) );
-                }
-            }
-            else
-            {
-                if ( isEnemy( board, pieceRow + 1, pieceColumn - 1 ) ){
-                    moves.add( ( pieceRow + 1 ) + "," + ( pieceColumn - 1 ) );
-                }
-                if ( isEnemy( board, pieceRow + 1, pieceColumn + 1 ) ){
-                    moves.add( ( pieceRow + 1 ) + "," + ( pieceColumn + 1 ) );
-                }
-            }
+        if (!isPieceOnScreen()) {
+            return moves;
         }
+        addNormalMoves(board, moves);
+        addEnemyCaptureMoves(board, moves);
+
         return moves;
+    }
+
+    private void addNormalMoves(ChessGameBoard board, ArrayList<String> moves) {
+        int currRow = getColorOfPiece() == ChessGamePiece.WHITE ? pieceRow - 1 : pieceRow + 1;
+        int count = 1;
+        int maxIter = notMoved ? 2 : 1;
+
+        while (count <= maxIter && isOnScreen(currRow, pieceColumn)) {
+            BoardSquare square = board.getCell(currRow, pieceColumn);
+            if (square.getPieceOnSquare() != null) {
+                break;
+            }
+            moves.add(currRow + "," + pieceColumn);
+            currRow += getColorOfPiece() == ChessGamePiece.WHITE ? -1 : 1;
+            count++;
+        }
+    }
+
+    private void addEnemyCaptureMoves(ChessGameBoard board, ArrayList<String> moves) {
+        int rowDiff = getColorOfPiece() == ChessGamePiece.WHITE ? -1 : 1;
+
+        if (isOnScreen(pieceRow + rowDiff, pieceColumn - 1) &&
+                isEnemy(board, pieceRow + rowDiff, pieceColumn - 1)) {
+            moves.add((pieceRow + rowDiff) + "," + (pieceColumn - 1));
+        }
+        if (isOnScreen(pieceRow + rowDiff, pieceColumn + 1) &&
+                isEnemy(board, pieceRow + rowDiff, pieceColumn + 1)) {
+            moves.add((pieceRow + rowDiff) + "," + (pieceColumn + 1));
+        }
     }
     /**
      * Creates an icon for this piece depending on the piece's color.

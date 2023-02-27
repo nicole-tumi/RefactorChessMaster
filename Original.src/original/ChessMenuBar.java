@@ -1,3 +1,5 @@
+package original;
+
 import java.awt.Component;
 import java.awt.event.*;
 import javax.swing.*;
@@ -79,18 +81,6 @@ public class ChessMenuBar extends JMenuBar{
     /**
      * Takes an appropriate action if the about button is clicked.
      */
-    //Modificar código - Move this method into "MenuListener".
-    /*
-    private void aboutHandler(){
-        JOptionPane.showMessageDialog(
-            this.getParent(),
-            "YetAnotherChessGame v1.0 by:\nBen Katz\nMyles David\n"
-                + "Danielle Bushrow\n\nFinal Project for CS2114 @ VT" );
-    }
-    */
-    /**
-     * Takes an appropriate action if the restart button is clicked.
-     */
 
     private void restartHandler(){
         ( (ChessPanel)this.getParent() ).getGameEngine().reset();
@@ -101,7 +91,7 @@ public class ChessMenuBar extends JMenuBar{
      * calls.
      */
 
-    // BUG - Modificar código - "NullPointerException" could be thrown
+    // BUG - "NullPointerException" could be thrown - Corregido
     private void exitHandler(){
         try{
             JOptionPane.showMessageDialog( this.getParent(), "Thanks for leaving"
@@ -111,8 +101,10 @@ public class ChessMenuBar extends JMenuBar{
                 possibleFrame = possibleFrame.getParent();
             }
             JFrame frame = (JFrame)possibleFrame;
-            frame.setVisible( false );
-            frame.dispose();
+            if (frame != null) {
+                frame.setVisible(false);
+                frame.dispose();
+            }
         }catch(NullPointerException e){
             System.out.println("NullPointerException thrown!");
         }

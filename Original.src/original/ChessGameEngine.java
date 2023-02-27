@@ -1,7 +1,11 @@
+package original;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import java.awt.event.MouseEvent;
+
 // -------------------------------------------------------------------------
 /**
  * This is the backend behind the Chess game. Handles the turn-based aspects of
@@ -12,7 +16,7 @@ import java.awt.event.MouseEvent;
  * @author Danielle Bushrow (dbushrow)
  * @version 2010.11.17
  */
-public class ChessGameEngine{
+public class ChessGameEngine implements Serializable {
     private ChessGamePiece currentPiece;
     private boolean        firstClick;
     private int            currentPlayer;
@@ -106,26 +110,18 @@ public class ChessGameEngine{
      * the correct color and if the user actually clicked ON a piece.)
      * @return boolean true if the piece is valid, false otherwise
      */
-    private boolean selectedPieceIsValid(){
-        if ( currentPiece == null ) // user tried to select an empty square
-        {
+    // Corregido - Reemplazar if-then-statement por return statement - 2 Smell code
+    private boolean selectedPieceIsValid() {
+        if (currentPiece == null) {
             return false;
         }
-        if ( currentPlayer == 2 ) // black player
-        {
-            if ( currentPiece.getColorOfPiece() == ChessGamePiece.BLACK ){
-                return true;
-            }
-            return false;
+        if (currentPlayer == 2 && currentPiece.getColorOfPiece() == ChessGamePiece.BLACK) {
+            return true;
         }
-        else
-        // white player
-        {
-            if ( currentPiece.getColorOfPiece() == ChessGamePiece.WHITE ){
-                return true;
-            }
-            return false;
+        if (currentPlayer != 2 && currentPiece.getColorOfPiece() == ChessGamePiece.WHITE) {
+            return true;
         }
+        return false;
     }
     /**
      * Determines if the requested King is in check.
@@ -241,73 +237,69 @@ public class ChessGameEngine{
      *            the mouse event from the listener
      */
 
-    // Modificar código - existe complejidad ciclomática alta
-    public void determineActionFromSquareClick( MouseEvent e ){
-        BoardSquare squareClicked = (BoardSquare)e.getSource();
+    // Corregido - Modificar código - existe complejidad ciclomática alta
+    public void determineActionFromSquareClick(MouseEvent e) {
+        BoardSquare squareClicked = (BoardSquare) e.getSource();
         ChessGamePiece pieceOnSquare = squareClicked.getPieceOnSquare();
         board.clearColorsOnBoard();
-        if ( firstClick ){
-            currentPiece = squareClicked.getPieceOnSquare();
-            if ( selectedPieceIsValid() ){
-                currentPiece.showLegalMoves( board );
-                squareClicked.setBackground( Color.GREEN );
-                firstClick = false;
-            }
-            else
-            {
-                if ( currentPiece != null ){
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "You tried to pick up the other player's piece! "
-                            + "Get some glasses and pick a valid square.",
-                        "Illegal move",
-                        JOptionPane.ERROR_MESSAGE );
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "You tried to pick up an empty square! "
-                            + "Get some glasses and pick a valid square.",
-                        "Illegal move",
-                        JOptionPane.ERROR_MESSAGE );
-                }
-            }
+
+        if (firstClick) {
+            handleFirstClick(squareClicked);
+        } else {
+            handleSecondClick(squareClicked, pieceOnSquare);
         }
-        else
-        {
-            if ( pieceOnSquare == null ||
-                !pieceOnSquare.equals( currentPiece ) ) // moving
-            {
-                boolean moveSuccessful =
-                    currentPiece.move(
-                        board,
-                        squareClicked.getRow(),
-                        squareClicked.getColumn() );
-                if ( moveSuccessful ){
-                    checkGameConditions();
-                }
-                else
-                {
-                    int row = squareClicked.getRow();
-                    int col = squareClicked.getColumn();
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "The move to row " + ( row + 1 ) + " and column "
-                            + ( col + 1 )
+    }
+    private void handleFirstClick(BoardSquare squareClicked) {
+        currentPiece = squareClicked.getPieceOnSquare();
+        if (selectedPieceIsValid()) {
+            currentPiece.showLegalMoves(board);
+            squareClicked.setBackground(Color.GREEN);
+            firstClick = false;
+        } else {
+            String message;
+            if (currentPiece != null) {
+                message = "You tried to pick up the other player's piece! "
+                        + "Get some glasses and pick a valid square.";
+            } else {
+                message = "You tried to pick up an empty square! "
+                        + "Get some glasses and pick a valid square.";
+            }
+            JOptionPane.showMessageDialog(
+                    squareClicked,
+                    message,
+                    "Illegal move",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void handleSecondClick(BoardSquare squareClicked, ChessGamePiece pieceOnSquare) {
+        if (pieceOnSquare == null || !pieceOnSquare.equals(currentPiece)) { // moving
+            handleMove(squareClicked);
+        } else { // user is just unselecting the current piece
+            firstClick = true;
+        }
+    }
+
+    private void handleMove(BoardSquare squareClicked) {
+        boolean moveSuccessful = currentPiece.move(
+                board,
+                squareClicked.getRow(),
+                squareClicked.getColumn());
+        if (moveSuccessful) {
+            checkGameConditions();
+        } else {
+            int row = squareClicked.getRow();
+            int col = squareClicked.getColumn();
+            JOptionPane.showMessageDialog(
+                    squareClicked,
+                    "The move to row " + (row + 1) + " and column "
+                            + (col + 1)
                             + " is either not valid or not legal "
                             + "for this piece. Choose another move location, "
                             + "and try using your brain this time!",
-                        "Invalid move",
-                        JOptionPane.ERROR_MESSAGE );
-                }
-                firstClick = true;
-            }
-            else
-            // user is just unselecting the current piece
-            {
-                firstClick = true;
-            }
+                    "Invalid move",
+                    JOptionPane.ERROR_MESSAGE);
         }
+        firstClick = true;
     }
 }

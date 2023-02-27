@@ -1,5 +1,8 @@
+package original;
+
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
+
 // -------------------------------------------------------------------------
 /**
  * Represents a King game piece.
@@ -69,7 +72,6 @@ public class King
         }else{
             return true;
         }
-        //return getCurrentAttackers( board ).size() > 0;
     }
     /**
      * Creates an icon for this piece depending on the piece's color.
