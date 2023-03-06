@@ -67,11 +67,7 @@ public class King
      * @return true if checked, false if not checked
      */
     public boolean isChecked( ChessGameBoard board ){
-        if(getCurrentAttackers( board ).isEmpty()){
-            return false;
-        }else{
-            return true;
-        }
+        return !getCurrentAttackers(board).isEmpty();
     }
     /**
      * Creates an icon for this piece depending on the piece's color.

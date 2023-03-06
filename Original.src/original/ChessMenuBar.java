@@ -3,6 +3,7 @@ package original;
 import java.awt.Component;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.logging.Logger;
 // -------------------------------------------------------------------------
 /**
  * Represents the north menu-bar that contains various controls for the game.
@@ -17,6 +18,7 @@ public class ChessMenuBar extends JMenuBar{
     /**
      * Create a new ChessMenuBar object.
      */
+    private static final Logger logger = Logger.getLogger(ChessMenuBar.class.getName());
     public ChessMenuBar(){
         String[] menuCategories = { "File", "Options", "Help" };
         String[] menuItemLists =
@@ -106,7 +108,7 @@ public class ChessMenuBar extends JMenuBar{
                 frame.dispose();
             }
         }catch(NullPointerException e){
-            System.out.println("NullPointerException thrown!");
+            logger.warning("NullPointerException thrown!");
         }
 
     }
