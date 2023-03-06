@@ -1,10 +1,12 @@
 package original;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
+import java.util.List;
 // -------------------------------------------------------------------------
 /**
  * The panel that represents the Chess game board. Contains a few methods that
@@ -17,7 +19,7 @@ import java.awt.GridLayout;
  */
 public class ChessGameBoard extends JPanel{
     private BoardSquare[][] chessCells;
-    private BoardListener   listener;
+    private transient BoardListener listener;
     // ----------------------------------------------------------
     /**
      * Returns the entire board.
@@ -74,8 +76,8 @@ public class ChessGameBoard extends JPanel{
      *
      * @return ArrayList<GamePiece> the pieces
      */
-    public ArrayList<ChessGamePiece> getAllWhitePieces(){
-        ArrayList<ChessGamePiece> whitePieces = new ArrayList<>();
+    public List<ChessGamePiece> getAllWhitePieces(){
+        List<ChessGamePiece> whitePieces = new ArrayList<>();
         for ( int i = 0; i < 8; i++ ){
             for ( int j = 0; j < 8; j++ ){
                 if ( chessCells[i][j].getPieceOnSquare() != null
@@ -93,8 +95,8 @@ public class ChessGameBoard extends JPanel{
      *
      * @return ArrayList<GamePiece> the pieces
      */
-    public ArrayList<ChessGamePiece> getAllBlackPieces(){
-        ArrayList<ChessGamePiece> blackPieces = new ArrayList<>();
+    public List<ChessGamePiece> getAllBlackPieces(){
+        List<ChessGamePiece> blackPieces = new ArrayList<>();
         for ( int i = 0; i < 8; i++ ){
             for ( int j = 0; j < 8; j++ ){
                 if ( chessCells[i][j].getPieceOnSquare() != null
@@ -156,7 +158,8 @@ public class ChessGameBoard extends JPanel{
      * pieces added.
      */
 
-    // Modificar código - existe complejidad ciclomática alta
+    // Corregido - Modificar código - existe complejidad ciclomática alta
+    // PATRON APLICADO: STATE o ESTADO
     public void initializeBoard(){
         resetBoard( false );
         for ( int i = 0; i < chessCells.length; i++ ){
@@ -240,9 +243,7 @@ public class ChessGameBoard extends JPanel{
      * @author Myles David (davidmm2)
      * @version 2010.11.16
      */
-    private class BoardListener
-        implements MouseListener
-    {
+    private class BoardListener implements MouseListener, Serializable {
         /**
          * Do an action when the left mouse button is clicked.
          *

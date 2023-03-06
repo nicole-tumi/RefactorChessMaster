@@ -17,6 +17,8 @@ import javax.swing.ImageIcon;
  * @author Danielle Bushrow (dbushrow)
  * @version 2010.11.17
  */
+
+// PATRON APLICADO: BRIDGE
 public abstract class ChessGamePiece implements Serializable {
     private boolean             skipMoveGeneration;
     private int                 pieceColor;
@@ -59,7 +61,6 @@ public abstract class ChessGamePiece implements Serializable {
      * @param pieceColor
      *            either GamePiece.WHITE, BLACK, or UNASSIGNED
      */
-    // Modificar la visibilidad a 'protected'
     protected ChessGamePiece(
         ChessGameBoard board,
         int row,
@@ -171,14 +172,17 @@ public abstract class ChessGamePiece implements Serializable {
         int count = 0;
         if ( isPieceOnScreen() ){
             for ( int i = pieceRow - 1; i >= 0 && count < numMoves; i-- ){
-                if ( board.getCell(i, pieceColumn).getPieceOnSquare() == null || isEnemy(board, i, pieceColumn) ) {
-                    moves.add(i + "," + pieceColumn);
+                if ( ( board.getCell( i, pieceColumn ).getPieceOnSquare()
+                        == null || isEnemy( board, i, pieceColumn ) ) ){
+                    moves.add( i + "," + pieceColumn );
                     count++;
                     if ( isEnemy( board, i, pieceColumn ) ){
                         break;
                     }
-                } else {
-                    continue;
+                }
+                else
+                {
+                    break;
                 }
             }
         }
@@ -199,17 +203,19 @@ public abstract class ChessGamePiece implements Serializable {
     protected ArrayList<String> calculateEastMoves(ChessGameBoard board, int numMoves){
         ArrayList<String> moves = new ArrayList<>();
         int count = 0;
-        boolean shouldContinue = true;
-        if (isPieceOnScreen()){
-            for (int i = pieceColumn + 1; i < 8 && count < numMoves && shouldContinue; i++){
-                if ((board.getCell(pieceRow, i).getPieceOnSquare() == null || isEnemy(board, pieceRow, i))){
-                    moves.add(pieceRow + "," + i);
+        if ( isPieceOnScreen() ){
+            for ( int i = pieceColumn + 1; i < 8 && count < numMoves; i++ ){
+                if ( ( board.getCell( pieceRow, i ).getPieceOnSquare()
+                        == null || isEnemy( board, pieceRow, i ) ) ){
+                    moves.add( pieceRow + "," + i );
                     count++;
-                    if (isEnemy(board, pieceRow, i)){
-                        shouldContinue = false;
+                    if ( isEnemy( board, pieceRow, i ) ){
+                        break;
                     }
-                } else {
-                    shouldContinue = false;
+                }
+                else
+                {
+                    break;
                 }
             }
         }
@@ -229,13 +235,18 @@ public abstract class ChessGamePiece implements Serializable {
     protected ArrayList<String> calculateWestMoves(ChessGameBoard board, int numMoves) {
         ArrayList<String> moves = new ArrayList<>();
         int count = 0;
-        if (isPieceOnScreen()) {
-            for (int i = pieceColumn - 1; i >= 0 && count < numMoves; i--) {
-                if (board.getCell(pieceRow, i).getPieceOnSquare() == null || isEnemy(board, pieceRow, i)) {
-                    moves.add(pieceRow + "," + i);
+        if ( isPieceOnScreen() ){
+            for ( int i = pieceColumn - 1; i >= 0 && count < numMoves; i-- ){
+                if ( ( board.getCell(pieceRow, i ).getPieceOnSquare()
+                        == null || isEnemy( board, pieceRow, i ) ) ){
+                    moves.add( pieceRow + "," + i );
                     count++;
+                    if ( isEnemy( board, pieceRow, i ) ){
+                        break;
+                    }
                 }
-                if (isEnemy(board, pieceRow, i)) {
+                else
+                {
                     break;
                 }
             }
@@ -656,13 +667,7 @@ public abstract class ChessGamePiece implements Serializable {
             return false;
         }
         if ( this.getColorOfPiece() == ChessGamePiece.WHITE ){
-            if ( enemyPiece.getColorOfPiece() == ChessGamePiece.BLACK ){
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return enemyPiece.getColorOfPiece() == ChessGamePiece.BLACK;
         }
         else
         {
@@ -676,7 +681,7 @@ public abstract class ChessGamePiece implements Serializable {
      * @param board the game board to check on
      * @return ArrayList<GamePiece> the list of attackers
      */
-    // Modificar código - return type of this method should be an interface such as "List"
+    // Corregido - Modificar código - return type of this method should be an interface such as "List"
     public List<ChessGamePiece> getCurrentAttackers(ChessGameBoard board) {
         List<ChessGamePiece> attackers = new ArrayList<>();
         int enemyColor = (this.getColorOfPiece() == ChessGamePiece.BLACK) ? ChessGamePiece.WHITE : ChessGamePiece.BLACK;
